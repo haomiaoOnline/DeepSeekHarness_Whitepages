@@ -27,13 +27,14 @@ flowchart TD
   PreTool --> Execute["tools/execute"]
   Execute --> PostTool["tools/post-execute"]
   PostTool --> ToolResult["tool/result"]
-  ToolResult --> More{"是否还有待处理工作"}
+  ToolResult --> StepEnd["step/end"]
+  StepEnd --> More{"工具还欠一次请求，或新输入已到"}
   More -->|是| Claim
   More -->|否| Stop["agent/turn-stopping"]
   Stop --> End
 ~~~
 
-流程中的每个位置都有自己的用途。agent/pre-step 可以拒绝或改写即将进入模型的输入。agent/request 连接 Agent 和模型适配器。llm/stream 处理流式分片。tools 的三个事件为策略、执行和结果加工提供接缝。
+流程中的每个位置都有自己的用途。agent/pre-step 决定模型看到什么，允许改写或直接拒绝输入。agent/request 连接 Agent 和模型适配器。llm/stream 处理流式分片。tools 的三个事件为策略、执行和结果加工提供接缝，step/end 为这一轮请求和它带出的工具调用收尾。一个 step 结束后，要么工具结果还需要模型继续处理，要么排队的下一步输入已经到达，两种情况都回到 claim 开启下一个 step。
 
 ## Session log 负责什么
 
