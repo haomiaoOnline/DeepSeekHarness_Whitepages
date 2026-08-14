@@ -1,2 +1,5 @@
 # 旧版备份（v1 快照），仅本地保留，不提交
 docs_v1/
+
+# JetBrains IDE 本地配置
+.idea/
