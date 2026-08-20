@@ -15,26 +15,28 @@ flowchart TD
   Start["turn/start"] --> Claim["领取下一步输入与一条排队消息"]
   Claim --> Prompt["组装提示词片段与工具 schema"]
   Prompt --> Pre["agent/pre-step"]
-  Pre -->|拒绝或空输入| End["关闭 Turn"]
+  Pre -->|拒绝或首个输入为空| End["turn/end"]
   Pre --> Step["step/start"]
   Step --> User["追加 user/message"]
   User --> History["从日志推导模型历史"]
   History --> Request["agent/request"]
   Request --> Stream["llm/stream"]
-  Stream --> Assistant["assistant/chunk 与 assistant/message"]
-  Assistant --> ToolCall["tool/call"]
+  Stream --> Assistant["assistant/chunk* 与 assistant/message"]
+  Assistant --> Calls{"是否产生 tool/call"}
+  Calls -->|否| StepEnd["step/end"]
+  Calls -->|是| ToolCall["tool/call*"]
   ToolCall --> PreTool["tools/pre-execute"]
   PreTool --> Execute["tools/execute"]
   Execute --> PostTool["tools/post-execute"]
-  PostTool --> ToolResult["tool/result"]
-  ToolResult --> StepEnd["step/end"]
+  PostTool --> ToolResult["tool/result*"]
+  ToolResult --> StepEnd
   StepEnd --> More{"工具还欠一次请求，或新输入已到"}
   More -->|是| Claim
   More -->|否| Stop["agent/turn-stopping"]
-  Stop --> End
+  Stop --> End["turn/end"]
 ~~~
 
-流程中的每个位置都有自己的用途。agent/pre-step 决定模型看到什么，允许改写或直接拒绝输入。agent/request 连接 Agent 和模型适配器。llm/stream 处理流式分片。tools 的三个事件为策略、执行和结果加工提供接缝，step/end 为这一轮请求和它带出的工具调用收尾。一个 step 结束后，要么工具结果还需要模型继续处理，要么排队的下一步输入已经到达，两种情况都回到 claim 开启下一个 step。
+流程中的每个位置都有自己的用途。agent/pre-step 决定模型看到什么，允许改写或直接拒绝输入。agent/request 连接 Agent 和模型适配器。llm/stream 处理流式分片。一次模型请求可以没有工具调用，也可以产生多个工具调用。tools 的三个事件为策略、执行和结果加工提供接缝，step/end 为这一轮请求和它带出的工具调用收尾。一个 step 结束后，要么工具结果还需要模型继续处理，要么排队的下一步输入已经到达，两种情况都回到 claim 开启下一个 step。
 
 ## Session log 负责什么
 
@@ -59,3 +61,9 @@ Agent 循环负责推动工作。工具注册表负责把可用能力整理成 s
 - 最后查 provider 或工具实现，确认错误发生在外部依赖还是本地管线。
 
 这样排查，比只看最后一条错误消息更容易还原一次运行到底走了哪条路径。
+
+## 本章事实源
+
+- [官方架构文档](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/docs/architecture.zh.md)
+- [官方 Agent 生命周期时序图](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/docs/agent-lifecycle.zh.md)
+- [官方会话子系统](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/docs/subsystems/session.zh.md)

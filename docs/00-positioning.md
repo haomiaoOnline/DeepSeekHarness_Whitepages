@@ -45,6 +45,12 @@ flowchart LR
 
 ## 本文的事实边界
 
-写作前，我把官方页面和钉死到 47f9438 的官方源码对着过了一遍，命令、包名和 ctx key 都以这份快照为准。官方页面和官方仓库直接写明的内容属于事实，本文根据包结构做出的解释明确服务于学习。你拿到更新版本时，先回官方仓库复核字段、事件签名和命令，再对照本文。
+写作前，我把官方页面和钉死到 141eb6f 的官方源码对着过了一遍，命令、包名和 ctx key 都以这份快照为准。官方页面和官方仓库直接写明的内容属于事实，本文根据包结构做出的解释明确服务于学习。你拿到更新版本时，先回官方仓库复核字段、事件签名和命令，再对照本文。
 
 本文是一份个人整理，作者为 yumi。它可以帮助读者进入官方项目，不能替代官方文档，也不代表 DeepSeek AI 的立场。
+
+## 本章事实源
+
+- [DeepSeek Harness 官方页面](https://www.deepseek.com/harness/)
+- [官方架构文档](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/docs/architecture.zh.md)
+- [官方中文 README](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/README.zh.md)

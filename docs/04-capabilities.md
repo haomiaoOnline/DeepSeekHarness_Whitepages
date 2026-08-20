@@ -22,6 +22,8 @@ LLM 包负责消息和流的共同词汇，并提供适配器接缝。适配器�
 
 本文不把某个 provider 的字段当成所有模型都必须具备的字段。模型接口会变化，精确类型应以当前源码为准。
 
+当前快照的公共内容块还包括 `reasoning` 和 `image`。DeepSeek 适配器已经支持多模态请求，图片通过持久附件进入消息。这个能力仍由具体 provider 和模型路由决定，读者不能只看到 `image` 类型就推断所有模型都能处理图片。
+
 ## 执行类能力
 
 | 能力 | 读者需要理解的边界 |
@@ -37,7 +39,9 @@ Shell 和 subprocess 共同构成一个执行世界。终端、LSP 和文件能�
 
 ## 工具与数据类能力
 
-文件系统能力让模型读取和修改文件。LSP 能够提供语义代码导航。Skill 把可复用的说明和流程装入运行时。Web 和 MCP 扩展外部信息或工具来源。Attachment 处理随会话进入的文件，spill 处理需要移出当前上下文的大块内容。
+文件系统能力让模型读取和修改文件。LSP 能够提供语义代码导航。Skill 把可复用的说明和流程装入运行时。Web 和 MCP 扩展外部信息或工具来源。Attachment 处理随会话进入的文件，当前图片附件会在接纳阶段检查尺寸和存储边界。spill 处理需要移出当前上下文的大块内容。
+
+Web 工具的消费方接受必填的 `queries` 数组，再把每个查询交给 `ctx.web` 的 provider。配置了多个可用 provider 时，应明确指定 provider id，不能依赖注册顺序。返回结果还会按消费方的最大数量截断。Web 抓取属于可选能力，面对可能触及内网的环境时，需要单独检查 URL 安全策略。
 
 这些能力共享一个原则。模型看到的 schema、权限和结果格式都应该明确，执行动作应该经过对应的 policy 或事件。把一个脚本直接接到模型面前，会让错误、权限和审计变得难以处理。
 
@@ -53,4 +57,11 @@ Shell 和 subprocess 共同构成一个执行世界。终端、LSP 和文件能�
 
 先读官方架构文档里的 capability seams，再按需要打开 subsystems、package README 和 cookbook。每打开一个能力包，都找它的服务定义、provider、consumer 和测试入口。
 
-如果你准备改动能力，先用 dsh --profile web --dump-config 确认当前运行时加载了哪一行配置。然后再判断需要改配置、加插件还是换 provider。这个顺序能减少直接改核心循环的冲动。
+如果你准备改动能力，先用 `pnpm dsh --profile web --dump-config` 确认当前运行时加载了哪一行配置。然后再判断需要改配置、加插件还是换 provider。这个顺序能减少直接改核心循环的冲动。
+
+## 本章事实源
+
+- [官方能力图](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/docs/capability-seams.zh.md)
+- [官方 LLM 流式协议](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/docs/subsystems/llm-streaming.zh.md)
+- [官方附件子系统](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/docs/subsystems/attachment.zh.md)
+- [官方 Web 子系统](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/docs/subsystems/web.zh.md)

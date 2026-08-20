@@ -24,9 +24,9 @@ export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 
 # ==== 配置区 ====
 UPSTREAM_URL="https://github.com/deepseek-ai/deepseek-harness.git"
-# 文档当前钉死的官方快照（2026-08-14 核对，07 章参考文献记录完整 hash）。
+# 文档当前钉死的官方快照（2026-08-20 核对，09 章记录本轮变化）。
 # 人工更新文档后，把新 commit 填到这里。
-PINNED_COMMIT="47f943859bef60e4160492346772ded9b24f765a"
+PINNED_COMMIT="141eb6fef83422698aef7a981029e843e8161534"
 LOG_DIR="$HOME/Library/Logs/dsh-update-check"
 LOG_FILE="$LOG_DIR/check.log"
 STATUS_FILE="$LOG_DIR/last-status.txt"
@@ -76,7 +76,7 @@ fi
 # 用本地 pi(headless) 分析更新并给出文档更新建议
 ANALYSIS=""
 if [ -x "$PI" ]; then
-    PROMPT="DeepSeek Harness 官方仓库有更新：本地文档钉死快照 47f9438，官方最新 HEAD ${UPSTREAM_HEAD:0:7}。最近提交：$(echo "$SUMMARY" | head -4 | tr '\n' '|')。请用中文简洁回答：1) 这次更新涉及哪些模块或改动重点；2) 对 ~/github/DeepSeekHarness_Whitepages 这份技术白皮书，哪几章需要核对更新。200 字以内。"
+    PROMPT="DeepSeek Harness 官方仓库有更新：本地文档钉死快照 141eb6f，官方最新 HEAD ${UPSTREAM_HEAD:0:7}。最近提交：$(echo "$SUMMARY" | head -4 | tr '\n' '|')。请用中文简洁回答：1) 这次更新涉及哪些模块或改动重点；2) 对 ~/github/DeepSeekHarness_Whitepages 这份技术白皮书，哪几章需要核对更新。200 字以内。"
     log "调用本地 pi 分析..."
     ANALYSIS="$("$PI" -p "$PROMPT" 2>>"$LOG_FILE" | tail -40)"
     log "pi 分析结果："
@@ -85,7 +85,7 @@ fi
 
 # macOS 通知（取分析结果第一行做摘要）
 FIRST_LINE="$(echo "$ANALYSIS" | grep -v '^[[:space:]]*$' | head -1)"
-NOTIFY_BODY="官方仓库有更新（47f9438 -> ${UPSTREAM_HEAD:0:7}）"
+NOTIFY_BODY="官方仓库有更新（141eb6f -> ${UPSTREAM_HEAD:0:7}）"
 [ -n "$FIRST_LINE" ] && NOTIFY_BODY="$NOTIFY_BODY。${FIRST_LINE}"
 osascript -e "display notification \"$NOTIFY_BODY\" with title \"DeepSeek Harness 更新检查\" sound name \"Glass\"" >>"$LOG_FILE" 2>&1
 

@@ -4,8 +4,8 @@
 
 作者为 yumi。
 
-文档状态为个人整理，持续跟随官方开发者预览版更新。
-资料快照为 2026-08-14，官方仓库提交 47f943859bef60e4160492346772ded9b24f765a。
+文档状态为个人整理，基于下方列出的官方快照编写。后续版本需要重新核对。
+资料快照为 2026-08-20，官方仓库提交 141eb6fef83422698aef7a981029e843e8161534，根版本为 0.1.0-rc.8。
 
 > 本项目由个人独立整理，与 DeepSeek AI 没有隶属、代理或官方合作关系。本文不代表 DeepSeek 的官方立场，也不替代官方文档。DeepSeek Harness、dsh、Cordis 及相关名称和标识归其各自权利人所有。
 
@@ -31,7 +31,7 @@
 npx @deepseek-ai/dsh web
 ~~~
 
-默认 Web UI 地址为 http://127.0.0.1:3080。首次启动是否能完成真实模型请求，取决于当前版本的配置和 DeepSeek 凭据。本文没有把未执行的真实 API 请求写成亲测结果。
+默认 Web UI 地址为 http://127.0.0.1:3080。本机启动时，官方运行时会尝试打开默认浏览器，传入 `--no-open` 可以关闭这次交接。通过 SSH 启动时只打印宿主机 URL，实际转发地址由 SSH 客户端或编辑器提供。启动 Web 服务本身可以先不配置密钥，真实模型请求仍需要 DeepSeek 凭据。本文没有把未执行的真实 API 请求写成亲测结果。
 
 ### 从源码运行
 
@@ -47,7 +47,7 @@ pnpm run build
 pnpm dsh web
 ~~~
 
-pnpm run typecheck 适合用来确认第一次安装已经完成。pnpm run build 会继续构建库和 Web 资源。使用 Web、headless、ACP 或真实 API 测试时，按照官方说明配置 DEEPSEEK_API_KEY，不要把密钥写入 Git。
+`pnpm run typecheck` 适合用来确认第一次安装已经完成。`pnpm run build` 会构建库和 Web 资源，`pnpm dsh web` 直接使用这些已构建产物。使用 Web 发送真实模型请求、headless、ACP 或真实 API 测试时，按照官方说明配置 `DEEPSEEK_API_KEY`，不要把密钥写入 Git。
 
 ## 章节目录
 
@@ -62,17 +62,18 @@ pnpm run typecheck 适合用来确认第一次安装已经完成。pnpm run buil
 | [06 持久化与对外接口](docs/06-persistence-and-interfaces.md) | 会话数据、workspace、credentials、SDK、ACP、API 与 Web |
 | [07 扩展 dsh](docs/07-extending-dsh.md) | 工具、适配器、provider、UI 节点和新包的选择方法 |
 | [08 开发验证与限制](docs/08-development-and-limits.md) | 开发者预览、版本变化、验证口径和安全边界 |
+| [09 本次更新记录](docs/09-updates-rc8.md) | 从 47f9438 到 141eb6f 的核对结果和新增能力 |
 | [术语与来源](docs/SOURCES.md) | 术语速查、资料快照、致谢和引用边界 |
 
 ## English summary
 
 This repository is an independent Chinese whitepaper and practical tutorial for DeepSeek Harness, authored by yumi. It explains the public architecture of dsh, including the Cordis plugin system, profiles and bundles, capability seams, the agent loop, session logs, orchestration, persistence, integrations, and extension points.
 
-The document is based on the official DeepSeek Harness website and a pinned snapshot of the official open-source repository. It is not an official DeepSeek publication and does not claim affiliation with DeepSeek AI. Runtime instructions that require a DEEPSEEK_API_KEY are clearly marked. The repository is released under the MIT License.
+The document is based on the official DeepSeek Harness website and the pinned 0.1.0-rc.8 snapshot of the official open-source repository. It is not an official DeepSeek publication and does not claim affiliation with DeepSeek AI. Runtime instructions that require a DEEPSEEK_API_KEY are clearly marked. The repository is released under the MIT License.
 
 ## 阅读时请记住三件事
 
-- 官方项目目前处于开发者预览阶段，接口可能发生破坏兼容性的变化。
+- 官方项目目前处于开发者预览阶段，接口可能发生破坏兼容性的变化。当前快照是 0.1.0-rc.8，不代表未来版本。
 - 本文的架构解释服务于学习和源码导航，精确类型、配置字段和最新命令应回到[官方仓库](https://github.com/deepseek-ai/deepseek-harness)核对。
 - 本地验证、公开资料整理和真实 API 调用属于不同事情。本文会把它们分开写。
 

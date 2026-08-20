@@ -25,11 +25,14 @@ Workspace 说明 Agent 在哪个文件环境中工作。Settings 保存运行配
 教程读者至少要记住下面几点。
 
 - 工作目录决定文件和进程看到的环境。
-- 设置可以被 profile、bundle 和 patch 组合。
+- profile、bundle 和 patch 组合的是 Cordis 运行配置。
+- Settings 按 schema 默认值、插件提供的 composition base 和用户自己的 section 处理用户设置。
 - 凭据应由受保护的存储或环境变量提供。
 - 日志和截图不能泄露 API Key。
 
 官方开发指南示例使用 DEEPSEEK_API_KEY 和可选的 DEEPSEEK_BASE_URL。真实项目里还需要结合自己的密钥管理和网络策略。
+
+当前快照的可选 SQLite 会话后端还优化了物理存储布局。相同分片块中的连续 delta 可以被打包到有界的 text、reasoning 和 tool-call 行，读取时再重建逻辑 SessionEvent 流。这个实现细节不改变会话日志作为事实来源的原则，也不代表 JSONL 与 SQLite 可以直接互换文件。
 
 ## 对外接口的几种路径
 
@@ -57,3 +60,10 @@ Workspace 说明 Agent 在哪个文件环境中工作。Settings 保存运行配
 从用户消息进入会话开始，沿着 SessionEvent、projection、查询和 UI 追踪。模型请求相关内容，再沿 deriveMessages 或等价的消息投影回到模型适配器。工具结果则沿 tool event 进入日志，并回到下一步请求。
 
 这样读代码，能把“界面没有显示”“模型没看到”“工具没有执行”区分成三个不同问题。
+
+## 本章事实源
+
+- [官方架构文档](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/docs/architecture.zh.md)
+- [官方持久化子系统](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/docs/subsystems/persistence.zh.md)
+- [官方 Settings 子系统](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/docs/subsystems/settings.zh.md)
+- [官方会话持久化目录](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/docs/persistence-catalog.zh.md)

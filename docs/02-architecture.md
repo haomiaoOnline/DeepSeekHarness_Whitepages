@@ -21,7 +21,7 @@ Bundle 是 Cordis 配置行和它们所挂载代码的分发形式。每个 bund
 3. Harness home 层的 patch。
 4. 命令行传入的 --patch overlay。
 
-patch 可以按 id 替换整行配置，也可以插入新行。执行 dsh --profile web --dump-config，可以看到机器实际启动的配置树。
+patch 可以按 id 替换整行配置，也可以插入新行。执行 `pnpm dsh --profile web --dump-config`，可以看到机器实际启动的配置树。
 
 ## 核心包怎样分工
 
@@ -34,6 +34,7 @@ patch 可以按 id 替换整行配置，也可以插入新行。执行 dsh --pro
 | core/agent-loop | 默认 Agent 驱动器 | ctx.agentLoop |
 | core/scope | 每个 Agent 的作用域注册能力 | 无固定 key |
 | llm/llm | 消息、流分片和模型适配器接缝 | ctx.llm |
+| experimental/agent-team | 实验性 Agent Teams 协作域 | ctx.agentTeams |
 
 这些包之间的关系比目录层级更重要。模型能力先看 llm 接缝，工具看 tools 注册表。需要恢复的运行事实应进入 session 事件。
 
@@ -71,5 +72,12 @@ Waterfall 事件需要监听器调用 next，才能把处理权继续交给后�
 | 添加文件系统或策略 | 提供 ctx.fs 或监听 fs 事件 |
 | 拦截请求、工具或轮次 | 使用 agent 或 tools 相关事件 |
 | 添加 Web Chat 节点 | 注册 ConversationNodeDefinition 和对应 renderer |
+| 添加实验性团队协作 | 显式启用 ctx.agentTeams 与 Agent Teams 工具包 |
 
 这里的表格适合做源码导航。真正开发前，应先阅读官方对应的 cookbook 和包 README。
+
+## 本章事实源
+
+- [官方架构文档](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/docs/architecture.zh.md)
+- [官方能力图](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/docs/capability-seams.zh.md)
+- [官方 Agent Teams 子系统](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/docs/subsystems/agent-team.zh.md)

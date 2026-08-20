@@ -17,6 +17,7 @@
 | UI Chat 节点 | ConversationNodeDefinition 和 renderer |
 | 持久会话状态 | SessionEventMap 和日志投影 |
 | 同一会话的目标 | ctx.goals |
+| Agent Teams 协作 | 实验性 ctx.agentTeams 与 team 工具 |
 
 这个表的意义在于限制改动范围。行为已经有接缝时，优先挂到接缝上。只有现有事件和服务无法表达需求时，才重新评估核心循环。
 
@@ -53,6 +54,8 @@
 
 Web Chat 节点需要同时考虑服务端注册、客户端 renderer 和会话事件。协议驱动的扩展则需要把输入、输出、错误、取消和会话标识写清楚。
 
+设置页扩展还要同时注册 Host 侧的 settings namespace 和 Client 侧的 keyed card。卡片通过 `ctx.settingsScope` 读写对应 section，敏感字段应使用 secret 角色或 credentials 引用，重启后才生效的字段要标记 restart。当前官方 cookbook 把这条路径单独列出，适合在已有 Cordis entry 的插件上复用。
+
 一个扩展能在本地运行，不代表它已经适合长期发布。公开插件还要补齐 README、许可证、版本要求、权限说明和最小复现步骤。官方 README 建议为插件仓库添加 dsh-plugin 话题，便于社区发现。
 
 ## 扩展后的检查顺序
@@ -60,7 +63,14 @@ Web Chat 节点需要同时考虑服务端注册、客户端 renderer 和会话�
 ~~~bash
 pnpm run typecheck
 pnpm run build
-dsh --profile web --dump-config
+pnpm dsh --profile web --dump-config
 ~~~
 
 再根据改动范围选择测试和文档检查。若改动涉及模型请求、文件写入、Shell 或凭据，增加一个失败路径检查和一个权限检查。最后确认新插件没有把密钥、个人路径或临时调试数据带进仓库。
+
+## 本章事实源
+
+- [官方架构文档](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/docs/architecture.zh.md)
+- [官方扩展实操手册](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/docs/cookbook/extension-cookbook.zh.md)
+- [官方设置卡片 Cookbook](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/docs/cookbook/adding-a-settings-card.zh.md)
+- [官方 Agent Teams 子系统](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/docs/subsystems/agent-team.zh.md)

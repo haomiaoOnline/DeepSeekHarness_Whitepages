@@ -11,7 +11,7 @@
 - Node.js 支持 22.19 及以上的 22.x 版本，或 24 及以上版本。
 - 仓库固定使用 pnpm 11.7.0。
 - Git 需要 2.26 或更新版本。
-- Web、headless、ACP 自动化演示和真实 API 端到端测试需要 DeepSeek API Key。
+- Web UI 进程可以先无密钥启动。Web 中发送真实模型请求、headless、ACP 自动化演示和真实 API 端到端测试需要 DeepSeek API Key。
 
 先检查本机版本。
 
@@ -40,6 +40,8 @@ npx @deepseek-ai/dsh web
 
 默认 Web UI 地址是 http://127.0.0.1:3080。这个命令适合快速认识界面和运行入口。它依赖当前 npm 分发结果，遇到版本差异时，应改用固定源码快照排查。
 
+当前 Web 运行时在本机启动时会尝试打开默认浏览器。传入 `--no-open` 可以关闭这次交接。通过 SSH 启动时只打印宿主机 URL，实际转发地址由 SSH 客户端或编辑器提供。
+
 ## 路径二，从源码运行
 
 ~~~bash
@@ -56,14 +58,14 @@ pnpm dsh web
 查看当前 profile 实际组合的配置树。
 
 ~~~bash
-dsh --profile web --dump-config
+pnpm dsh --profile web --dump-config
 ~~~
 
 输出内容可以用来定位某一项能力由哪个配置行提供，也能帮助你理解 bundle 和 patch 的覆盖顺序。
 
 ## 哪些步骤需要 API Key
 
-需要真实请求模型时，在当前 shell 或项目根目录的 gitignored .env 中设置下面的变量。
+Web 服务可以先在没有密钥的情况下启动。需要真实请求模型时，在当前 shell 或项目根目录的 gitignored .env 中设置下面的变量。
 
 ~~~bash
 export DEEPSEEK_API_KEY=你的密钥
@@ -85,8 +87,14 @@ export DEEPSEEK_API_KEY=你的密钥
 
 ### Web 能打开但模型不响应
 
-检查 DEEPSEEK_API_KEY 是否只存在于当前进程，检查 API 地址是否与当前配置匹配。浏览器界面能启动，只说明本地服务启动路径工作，不能单独证明模型调用已经成功。
+检查 DEEPSEEK_API_KEY 是否只存在于当前进程，检查 API 地址是否与当前配置匹配。浏览器界面能启动，只说明本地服务启动路径工作，不能单独证明模型调用已经成功。headless、ACP 和真实 API 端到端测试则应在明确配置凭据后单独记录结果。
 
 ## 这一章的验收口径
 
 无密钥检查能够说明环境、依赖、类型和构建流程是否可复核。真实对话还需要 API Key、可用的模型服务和当前版本支持的配置。两者在报告和文档里分别记录。
+
+## 本章事实源
+
+- [官方中文 README](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/README.zh.md)
+- [官方开发指南](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/docs/development.zh.md)
+- [官方 Web 组合包说明](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/packages/bundle/web-app/README.zh.md)

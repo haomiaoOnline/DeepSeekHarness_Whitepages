@@ -4,7 +4,7 @@
 
 官方页面和官方 README 都把 DeepSeek Harness 标为开发者预览版，并明确提醒未来会出现破坏兼容性的变更。这个状态会影响教程的写法。
 
-本文把命令、目录和类型说明绑定到 2026-08-14 核对的官方提交 47f943859bef60e4160492346772ded9b24f765a。读者使用更新版本时，先检查 README、package.json、docs/development.md 和 docs/architecture.md，再判断章节里的命令是否仍然成立。
+本文把命令、目录和类型说明绑定到 2026-08-20 核对的官方提交 141eb6fef83422698aef7a981029e843e8161534，根版本为 0.1.0-rc.8。读者使用更新版本时，先检查 README、package.json、docs/development.md 和 docs/architecture.md，再判断章节里的命令是否仍然成立。
 
 ## 验证矩阵
 
@@ -14,7 +14,7 @@
 | 依赖安装 | 是 | 否 |
 | typecheck | 是 | 否 |
 | build | 是 | 否 |
-| Web UI 能否启动 | 通常可先检查命令 | 真实模型请求可能需要 |
+| Web UI 能否启动 | 是 | 否 |
 | headless Agent | 否 | 是 |
 | ACP 自动化演示 | 否 | 是 |
 | 真实 API 端到端测试 | 否 | 是 |
@@ -63,3 +63,9 @@
 这是一份源码导读和实践教程，适合帮助开发者理解 dsh 的公开设计和进入官方仓库。它不提供 DeepSeek API Key，不承诺特定模型输出，也不代替安全评审、生产部署检查或官方支持。
 
 真正部署时，还需要补充自己的网络、权限、日志、密钥、数据留存和成本策略。尤其是 Shell、文件系统、远程执行和后台任务，必须在清楚的工作目录与授权范围内运行。
+
+## 本章事实源
+
+- [官方中文 README](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/README.zh.md)
+- [官方开发指南](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/docs/development.zh.md)
+- [官方 package.json](https://github.com/deepseek-ai/deepseek-harness/blob/141eb6fef83422698aef7a981029e843e8161534/package.json)
